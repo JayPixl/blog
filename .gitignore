@@ -4,3 +4,6 @@ node_modules
 /build
 /public/build
 .env
+todo.txt
+
+app/routes/delete-assets.ts

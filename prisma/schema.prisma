@@ -1,0 +1,90 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Post {
+  id String @id @map("_id") @default(auto()) @db.ObjectId
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  writer User @relation(references: [id], fields: [writerId], "PostWriter")
+  writerId String @db.ObjectId
+
+  description String?
+
+  // categories Category[] @relation(fields: [categoryIds], references: [id], "PostCategories")
+  // categoryIds String[] @db.ObjectId
+
+  draft Boolean
+
+  title String
+  slug String?
+
+  draftContent String?
+  content String
+
+  tags String[]
+}
+
+model User {
+  id String @id @map("_id") @default(auto()) @db.ObjectId
+
+  verified Boolean
+  verifyCode String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  writtenPosts Post[] @relation("PostWriter")
+
+  email String
+  password String
+  fullName String?
+  nickname String?
+
+  anonymousNumber String?
+
+  avatarUrl String?
+
+  type UserType
+}
+
+// model Category {
+//   id String @id @map("_id") @default(auto()) @db.ObjectId
+
+//   name String
+
+//   // posts Post[] @relation(fields: [postIds], references: [id], "PostCategories")
+//   // postIds String[] @db.ObjectId
+// }
+
+model Asset {
+  id String @id @map("_id") @default(auto()) @db.ObjectId
+
+  type AssetType
+
+  title String
+
+  folder String
+
+  url String
+}
+
+enum UserType {
+  ADMIN
+  USER
+}
+
+enum AssetType {
+  IMAGE
+  VIDEO
+}
